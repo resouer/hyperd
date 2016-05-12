@@ -216,6 +216,15 @@ message ImageListResponse {
     repeated ImageInfo imageList = 1;
 }
 
+message PodLabelsRequest{
+  string podId               = 1;
+  bool override              = 2;
+  map<string, string> labels = 3;
+}
+
+message PodLabelsResponse{
+}
+
 // PublicAPI defines the public APIs which are handled over TCP sockets.
 service PublicAPI {
     // PodList implements GET /list?item=pod
@@ -236,8 +245,12 @@ service PublicAPI {
     // VMList implements GET /list?item=vm
     rpc VMList(VMListRequest) returns (VMListResponse) {}
 
+    // PodLabels implements  POST   /pod/labels
+    rpc PodLabels(PodLabelsRequest) returns (PodLabelsResponse) {}
+
     // TODO: implements  GET    /pod/stats
-    // TODO: implements  POST   /pod/labels
+    // GetPodStats returns `interface{}` instead of `hyperhq/runv/hypervisor/types/stats.go`, needs refactoring
+
     // TODO: implements  POST   /pod/start
     // TODO: implements  POST   /pod/stop
     // TODO: implements  POST   /pod/kill
