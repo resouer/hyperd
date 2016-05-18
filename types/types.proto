@@ -234,6 +234,19 @@ message VMRemoveResponse {
   string cause  = 2;
 }
 
+message PodStartRequest {
+  string podId   = 1;
+  string vmId    = 2;
+  string tag     = 3;
+  bytes content  = 4;
+}
+
+message PodStartResponse {
+  int32 code       = 1;
+  string cause   = 2;
+  bytes content  = 3;
+}
+
 // PublicAPI defines the public APIs which are handled over TCP sockets.
 service PublicAPI {
     // PodList implements GET /list?item=pod
@@ -260,7 +273,10 @@ service PublicAPI {
 
     // TODO: implements  GET    /pod/stats
     // TODO: implements  POST   /pod/labels
-    // TODO: implements  POST   /pod/start
+
+    // PodStart implements  POST   /pod/start
+    rpc PodStart(stream PodStartRequest) returns (stream PodStartResponse) {}
+
     // TODO: implements  POST   /pod/stop
     // TODO: implements  POST   /pod/kill
     // TODO: implements  POST   /pod/pause
