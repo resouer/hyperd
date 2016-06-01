@@ -138,6 +138,7 @@ func GetServices(vm *hypervisor.Vm, container string) ([]pod.UserService, error)
 	config := path.Join(ServiceVolume, ServiceConfig)
 
 	data, err := vm.ReadFile(container, config)
+
 	if err != nil {
 		return nil, err
 	}

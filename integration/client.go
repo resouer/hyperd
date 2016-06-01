@@ -334,6 +334,7 @@ func (c *HyperClient) ContainerExec(container, tag string, command []string, tty
 }
 
 // StartPod starts a pod by podID
+// NOTE: this function is only for test, it does not deal with I/O
 func (c *HyperClient) StartPod(podID, vmID, tag string) error {
 	stream, err := c.client.PodStart(context.Background())
 	if err != nil {
@@ -431,6 +432,7 @@ func (c *HyperClient) PushImage(repo, tag string, out io.Writer) error {
 	}
 
 	stream, err := c.client.ImagePush(c.ctx, &request)
+
 	if err != nil {
 		return err
 	}
@@ -453,6 +455,47 @@ func (c *HyperClient) PushImage(repo, tag string, out io.Writer) error {
 				return io.ErrShortWrite
 			}
 		}
+	}
+
+	return nil
+}
+
+// DeleteService deletes user service by podID and service content
+func (c *HyperClient) DeleteService(podID string, data string) error {
+	_, err := c.client.ServiceDelete(
+		c.ctx,
+		&types.ServiceDelRequest{PodID: podID, Data: data},
+	)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ListService lists user services by podID
+func (c *HyperClient) ListService(podID string) ([]*types.UserService, error) {
+	resp, err := c.client.ServiceList(
+		c.ctx,
+		&types.ServiceListRequest{PodID: podID},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.UserService, nil
+}
+
+// AddService add user service by podID and service content
+func (c *HyperClient) AddService(podID string, data string) error {
+	_, err := c.client.ServiceAdd(
+		c.ctx,
+		&types.ServiceAddRequest{PodID: podID, Data: data},
+	)
+
+	if err != nil {
+		return err
 	}
 
 	return nil
